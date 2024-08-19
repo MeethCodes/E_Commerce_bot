@@ -12,7 +12,7 @@
     "permissions": ["activeTab", "scripting" , "storage", "webNavigation", "tabs"],
     "content_scripts": [
         {
-            "matches": ["https://www.google.com/*"],
+            "matches": ["<all_urls>"],
             "js": ["static/content.js"]
         }
     ],

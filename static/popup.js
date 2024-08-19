@@ -1,6 +1,6 @@
 console.log("in the extension...");
 
-document.getElementById('submitButton1').addEventListener('click', function() {
+document.getElementById('submitButton1').addEventListener('click', async function() {
     console.log('Submit button clicked');  // Debugging line
 
     const userMessage = document.getElementById('userInput1').value.trim();
@@ -10,15 +10,17 @@ document.getElementById('submitButton1').addEventListener('click', function() {
         // Display user message in chat bubble
         addMessageToChat(userMessage, 'user-message');
 
-        // Simulate a bot response
-        const botResponse = `This was your message - ${userMessage}`;
+        // Send user message to the backend and get the bot's response
+        const botResponse = await sendMessageToBackend(userMessage);
+        console.log("-----------#$#$");
+        console.log(botResponse);
+        console.log("-----------#$#$");
+
+        // Display bot's response in chat bubble
         addMessageToChat(botResponse, 'bot-response');
 
         // Clear the input field
         document.getElementById('userInput1').value = '';
-
-        // Send user message to the backend (if applicable)
-        sendMessageToBackend(userMessage);
     }
 });
 
@@ -35,22 +37,23 @@ function addMessageToChat(message, className) {
     chatList.scrollTop = chatList.scrollHeight;
 }
 
-function sendMessageToBackend(userMessage) {
-    fetch('http://127.0.0.1:5000/process-message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: userMessage }),
-    })
-    .then(response => {
+async function sendMessageToBackend(userMessage) {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/process-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+        });
+
         console.log('Response received');  // Debugging line
-        return response.json();
-    })
-    .then(data => {
+        const data = await response.json();
         console.log('Processed message:', data.processed_message);
-    })
-    .catch((error) => {
+        return data.processed_message;
+
+    } catch (error) {
         console.error('Error:', error);
-    });
+        return 'Sorry, something went wrong!';
+    }
 }
