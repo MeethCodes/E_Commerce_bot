@@ -12,9 +12,7 @@ document.getElementById('submitButton1').addEventListener('click', async functio
 
         // Send user message to the backend and get the bot's response
         const botResponse = await sendMessageToBackend(userMessage);
-        console.log("-----------#$#$");
         console.log(botResponse);
-        console.log("-----------#$#$");
 
         // Display bot's response in chat bubble
         addMessageToChat(botResponse, 'bot-response');
